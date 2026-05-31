@@ -25,7 +25,12 @@ async function handleExpense(ctx) {
   const parsed = parseMessage(text);
 
   if (!parsed) {
-    return; // Не распознали сумму — игнорируем
+    await ctx.reply(
+      'Не удалось распознать трату. Формат: сумма + описание.\n' +
+      'Примеры: 1000 продукты, 500$ такси, 50 РЕМОНТ обои\n\n' +
+      'Все команды: /help'
+    );
+    return;
   }
 
   const { amount, currency, specialTag, description } = parsed;
