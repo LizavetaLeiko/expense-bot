@@ -1,7 +1,5 @@
 try { require('dotenv').config(); } catch {}
 
-console.log('All env keys:', Object.keys(process.env).join(', '));
-
 module.exports = {
   botToken: process.env.BOT_TOKEN,
   anthropicApiKey: process.env.ANTHROPIC_API_KEY,
