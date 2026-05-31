@@ -1,5 +1,11 @@
 require('dotenv').config();
 
+console.log('ENV check:', {
+  hasBotToken: !!process.env.BOT_TOKEN,
+  hasAnthropicKey: !!process.env.ANTHROPIC_API_KEY,
+  hasMongoUri: !!process.env.MONGO_URI,
+});
+
 module.exports = {
   botToken: process.env.BOT_TOKEN,
   anthropicApiKey: process.env.ANTHROPIC_API_KEY,
