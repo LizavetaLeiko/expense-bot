@@ -14,9 +14,11 @@ const chartCanvas = new ChartJSNodeCanvas({
 chartCanvas.registerFont(FONT_PATH, { family: 'Noto Sans' });
 
 const COLORS = [
-  '#E74C3C', '#2E86C1', '#F39C12', '#27AE60', '#8E44AD',
-  '#E67E22', '#1ABC9C', '#C0392B', '#2980B9', '#D4AC0D',
-  '#16A085', '#7D3C98', '#CA6F1E', '#138D75', '#CB4335',
+  '#F9DEEC', '#CDBCB6', '#A4DDDE', '#CAE4C4', '#EA949D',
+  '#CAEAED', '#FFE99A', '#E56E83', '#DABDFF', '#F1F9A4',
+  '#8FA3EE', '#8FB79D', '#ABF7B7', '#F2A9E0', '#EABDB8',
+  '#C3CCCD', '#FFC0CC', '#F9F1E6', '#73FFC0', '#B9CEFF',
+  '#B7BCFF', '#F87BFF', '#FE89C7', '#FE8989', '#EAE1B8'
 ];
 
 /**
