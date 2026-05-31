@@ -1,8 +1,6 @@
-try {
-  require('dotenv').config();
-} catch {
-  // dotenv not available in production — env vars injected by Railway
-}
+try { require('dotenv').config(); } catch {}
+
+console.log('All env keys:', Object.keys(process.env).join(', '));
 
 module.exports = {
   botToken: process.env.BOT_TOKEN,
