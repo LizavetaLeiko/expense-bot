@@ -1,10 +1,8 @@
-require('dotenv').config();
-
-console.log('ENV check:', {
-  hasBotToken: !!process.env.BOT_TOKEN,
-  hasAnthropicKey: !!process.env.ANTHROPIC_API_KEY,
-  hasMongoUri: !!process.env.MONGO_URI,
-});
+try {
+  require('dotenv').config();
+} catch {
+  // dotenv not available in production — env vars injected by Railway
+}
 
 module.exports = {
   botToken: process.env.BOT_TOKEN,

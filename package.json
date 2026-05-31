@@ -14,8 +14,10 @@
     "@anthropic-ai/sdk": "^0.100.1",
     "chart.js": "^4.5.1",
     "chartjs-node-canvas": "^5.0.0",
-    "dotenv": "^17.4.2",
     "mongoose": "^9.6.2",
     "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "dotenv": "^17.4.2"
   }
 }
