@@ -163,6 +163,24 @@ function registerCallbacks(bot) {
     await ctx.reply('Нажмите на трату, чтобы удалить:', Markup.inlineKeyboard(rows));
   });
 
+  bot.action(/^deltag_(\d+)$/, async (ctx) => {
+    const telegramId = ctx.from.id;
+    const index = parseInt(ctx.match[1], 10);
+    const user = await User.findOne({ telegramId });
+
+    if (!user || !user.specialTags || index >= user.specialTags.length) {
+      await ctx.answerCbQuery('Данные устарели, попробуйте ещё раз.');
+      return;
+    }
+
+    const tag = user.specialTags[index];
+    await User.updateOne({ telegramId }, { $pull: { specialTags: tag } });
+    await Expense.updateMany({ userId: telegramId, specialTag: tag }, { $set: { specialTag: null } });
+
+    await ctx.answerCbQuery(`Тег "${tag}" удалён`);
+    await ctx.editMessageText(`Тег "${tag}" удалён. Он снят со всех трат.`, { reply_markup: { inline_keyboard: [] } });
+  });
+
   bot.action('cat_new', async (ctx) => {
     const telegramId = ctx.from.id;
     const pending = pendingCategoryChoice.get(telegramId);

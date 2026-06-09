@@ -28,6 +28,7 @@ bot.start((ctx) => {
     '/remove_category Название — удалить свою категорию\n' +
     '/add_hints Категория: подсказки — добавить подсказки\n' +
     '/delete — удалить трату\n' +
+    '/delete_tag — удалить тег\n' +
     '/new_period — начать новый период бюджета\n' +
     '/set_budget Категория Сумма — задать лимит\n' +
     '/budgets — сводка по бюджетам\n' +
@@ -59,11 +60,14 @@ bot.help((ctx) => {
     '   /add_category Транспорт дальний: самолёт, поезд — с подсказками (вводить их после двоеточия)\n' +
     '   /remove_category Транспорт дальний — удалить\n' +
     '   /add_hints Продукты: белка, еврик — добавить подсказки к существующей категории (т.е. Категория: подсказки)\n\n' +
-    '6. Удалить трату:\n' +
+    '6. Удалить тег:\n' +
+    '   /delete_tag — выбрать из списка\n' +
+    '   /delete_tag РЕМОНТ — удалить конкретный тег\n\n' +
+    '7. Удалить трату:\n' +
     '   Нажмите «Отменить» сразу после добавления\n' +
     '   /delete — последние траты для удаления\n' +
     '   /delete 01.05 — выбрать из списка одну из трат от этой даты до сегодня\n\n' +
-    '7. Бюджеты — сумма, которую вы рассчитываете потратить на указанную категорию:\n' +
+    '8. Бюджеты — сумма, которую вы рассчитываете потратить на указанную категорию:\n' +
     '   /new_period — начать новый период (с сегодня) и завершить прошлый\n' +
     '   /new_period 29.05 — с указанной даты\n' +
     '   /set_budget Продукты 1000 — задать лимит\n' +
@@ -175,6 +179,34 @@ bot.command('delete', async (ctx) => {
   }
 
   await ctx.reply('Нажмите на трату, чтобы удалить:', Markup.inlineKeyboard(rows));
+});
+
+bot.command('delete_tag', async (ctx) => {
+  const telegramId = ctx.from.id;
+  const user = await User.findOne({ telegramId });
+
+  if (!user || !user.specialTags || user.specialTags.length === 0) {
+    return ctx.reply('У вас нет тегов.');
+  }
+
+  const arg = ctx.message.text.replace('/delete_tag', '').trim();
+
+  if (arg) {
+    const tag = user.specialTags.find((t) => t === arg);
+    if (!tag) {
+      return ctx.reply(`Тег "${arg}" не найден.\n\nВаши теги: ${user.specialTags.join(', ')}`);
+    }
+
+    await User.updateOne({ telegramId }, { $pull: { specialTags: tag } });
+    await Expense.updateMany({ userId: telegramId, specialTag: tag }, { $set: { specialTag: null } });
+    return ctx.reply(`Тег "${tag}" удалён. Он снят со всех трат.`);
+  }
+
+  const rows = user.specialTags.map((tag, i) => [
+    Markup.button.callback(tag, `deltag_${i}`),
+  ]);
+
+  await ctx.reply('Выберите тег для удаления:', Markup.inlineKeyboard(rows));
 });
 
 bot.command('add_hints', async (ctx) => {
@@ -314,6 +346,7 @@ bot.telegram.setMyCommands([
   { command: 'remove_category', description: 'Удалить свою категорию' },
   { command: 'add_hints', description: 'Добавить подсказки к категории' },
   { command: 'delete', description: 'Удалить трату (можно добавить дату/период)' },
+  { command: 'delete_tag', description: 'Удалить тег' },
   { command: 'new_period', description: 'Начать новый период бюджета (можно добавить дату)' },
   { command: 'set_budget', description: 'Задать бюджет на категорию' },
   { command: 'budgets', description: 'Сводка по бюджетам' },
